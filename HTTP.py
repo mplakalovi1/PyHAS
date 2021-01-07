@@ -5,6 +5,7 @@ import time
 class Http:
     def __init__(self, url):
         self.response = requests.get(url)
+        self.date = time.strftime("%a, %d %b %Y %H:%M:%S %Z")  # date & time of response (in local time)
 
     def getsize(self):  # response size in bytes
         return self.response.headers['Content-Length']
@@ -12,11 +13,12 @@ class Http:
     def getrsptime(self):  # response time in seconds
         return self.response.elapsed.total_seconds()
 
-    def usersbandwidth(self):  # user's bandwidth
+    def usersbandwidth(self):  # user's bandwidth [bps]
         return float(self.getsize()) * 8 / float(self.getrsptime())
 
     def getcontent(self):  # content of the response, in unicode
         return self.response.text
 
-    def successful(self):  # check if response code is 200 (check is response successful)
+    def successful(self):  # check if response code is 200 (check if response is successful)
         return self.response.status_code == 200
+
