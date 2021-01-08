@@ -4,7 +4,7 @@ import time
 
 class Http:
     def __init__(self, url):
-        self.response = requests.get(url)
+        self.response = requests.get(url)  # response object
         self.date = time.strftime("%a, %d %b %Y %H:%M:%S %Z")  # date & time of response (in local time)
 
     def getsize(self):  # response size in bytes
@@ -21,4 +21,3 @@ class Http:
 
     def successful(self):  # check if response code is 200 (check if response is successful)
         return self.response.status_code == 200
-
