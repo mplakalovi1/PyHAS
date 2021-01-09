@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import logging
 
 
 class Parser:
@@ -37,4 +38,11 @@ class Parser:
         for representation in self.myroot.iter(self.namespace + 'Representation'):
             self.segments['segment' + str(i)] = representation.attrib
             self.bandwidths.append(representation.get('bandwidth'))
-            i+=1
+            i += 1
+
+        # Logging informations
+        logging.info("MPD file informations:"
+                     "\nMPD file title: {}"
+                     "\nStream duration: {} seconds"
+                     "\nSegments number: {}"
+                     "\nRepresentations: {}".format(self.mpdTitle, self.mediaPresentationDuration, self.segmentsNumber, self.segments))

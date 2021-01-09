@@ -1,11 +1,13 @@
 import requests
-import time
+import logging
+logging.basicConfig(filename='pyHAS.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 class Http:
     def __init__(self, url):
+        logging.info("Request sent.")  # date & time of sending request (in local time)
         self.response = requests.get(url)  # response object
-        self.date = time.strftime("%a, %d %b %Y %H:%M:%S %Z")  # date & time of response (in local time)
+        logging.info("Response received.")  # date & time of response (in local time)
 
     def getsize(self):  # response size in bytes
         return self.response.headers['Content-Length']
