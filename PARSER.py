@@ -3,8 +3,10 @@ import logging
 
 
 class Parser:
-    def __init__(self, mpd_file):
+
+    def __init__(self, mpd_file, mpdurl: str):
         self.myroot = ET.fromstring(mpd_file)  # parsing xml file from string
+        self.mpdUrl = mpdurl
         self.namespace = None
         self.minBufferTime = None
         self.mediaPresentationDuration = None
@@ -15,7 +17,7 @@ class Parser:
         self.segments = dict()
         self.bandwidths = list()
 
-    def bigbuckbunny_4s_simple(self):  # parsing BigBuckBunny_4s_simple .XML file
+    def simple(self):  # parsing BigBuckBunny_4s_simple .XML file
         self.namespace = self.myroot.tag.split("}")[0] + "}"  # extracting xmlns for proper search function
 
         minbuffertime = self.myroot.attrib['minBufferTime']  # reading minBufferTime in xml specific format
@@ -35,14 +37,23 @@ class Parser:
 
         # segments representations:
         i = 1
-        for representation in self.myroot.iter(self.namespace + 'Representation'):
+        for representation in self.myroot.find(self.namespace + 'Period').find(self.namespace + 'AdaptationSet').iter(self.namespace + 'Representation'):
             self.segments['segment' + str(i)] = representation.attrib
-            self.bandwidths.append(representation.get('bandwidth'))
+            self.bandwidths.append(int(representation.get('bandwidth')))
             i += 1
 
+        self.bandwidths.sort() # bandwidths sorted in ascending order
         # Logging informations
         logging.info("MPD file informations:"
                      "\nMPD file title: {}"
                      "\nStream duration: {} seconds"
                      "\nSegments number: {}"
                      "\nRepresentations: {}".format(self.mpdTitle, self.mediaPresentationDuration, self.segmentsNumber, self.segments))
+
+    def media_url(self, segment, number):
+        index = self.mpdUrl.rfind('/') + 1
+        return (self.mpdUrl[:index] + self.media).replace('$Bandwidth$', str(segment)).replace('$Number$', str(number))
+
+    def initialization_url(self):
+        index = self.mpdUrl.rfind('/') + 1
+        return (self.mpdUrl[:index] + self.initialization).replace('$Bandwidth$', str(self.bandwidths[0]))
