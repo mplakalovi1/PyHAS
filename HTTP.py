@@ -5,9 +5,9 @@ logging.basicConfig(filename='pyHAS.log', level=logging.INFO, format='%(asctime)
 
 class Http:
 
-    def __init__(self, url):
+    def __init__(self, url, TIMEOUT=5):
         logging.info("Request sent (request url: '{}')".format(url))  # date & time of sending request (in local time)
-        self.response = requests.get(url)  # response object
+        self.response = requests.get(url, timeout=TIMEOUT)  # response object
         logging.info("Response received.")  # date & time of response (in local time)
 
     def getsize(self):  # response size in bytes
