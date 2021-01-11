@@ -28,9 +28,9 @@ def try_req_exc(url):
     except exceptions.RequestException as err4:
         logging.error(str(err4) + " error4")
         sys.exit()
+
+
 # ---------------------------------------------------------------------------------------------------------------------
-
-
 # Streams:
 mpd_url = {
     'BigBuckBunny_4s_simple': 'http://ftp.itec.aau.at/datasets/DASHDataset2014/BigBuckBunny/4sec'
@@ -51,11 +51,57 @@ parsed_mpd = PARSER.Parser(mpd_file.getcontent(), mpd_url['BigBuckBunny_4s_simpl
 parsed_mpd.simple()  # parsed .MPD file
 
 timeout_counter[0] = 0  # restarting timeout counter before sending next request
+logging.info("STREAM STARTED!")
 # Sending request for .mp4 initialization
 initialization = try_req_exc(parsed_mpd.initialization_url())
 
 alg = algorithm.Algorithm(parsed_mpd.bandwidths)  # instance of Algorithm class
-# Sending requests for segments:
+
+# Sending requests for segments using algorithm1:
+# while segment_counter <= parsed_mpd.segmentsNumber:
+#     if segment_counter == 1:  # first segment of minimum quality
+#         logging.info("Segment number {}: ".format(segment_counter))
+#         timeout_counter[0] = 0  # restarting timeout counter before sending next request
+#         segment = try_req_exc(parsed_mpd.media_url(parsed_mpd.bandwidths[0], segment_counter))
+#         logging.info("Response size: {} bytes".format(segment.getsize()))
+#         logging.info("Response time: {} seconds".format(segment.getrsptime()))
+#         logging.info("User's bandwidth: {} bps".format(segment.usersbandwidth()))
+#         buffer += 4
+#         logging.info("Buffer = {} sec".format(buffer))
+#
+#     elif segment_counter == 2:  # second segment of minimum quality
+#         logging.info("Segment number {}: ".format(segment_counter))
+#         timeout_counter[0] = 0  # restarting timeout counter before sending next request
+#         segment = try_req_exc(parsed_mpd.media_url(parsed_mpd.bandwidths[0], segment_counter))
+#         logging.info("Response size: {} bytes".format(segment.getsize()))
+#         logging.info("Response time: {} seconds".format(segment.getrsptime()))
+#         logging.info("User's bandwidth: {} bps".format(segment.usersbandwidth()))
+#         buffer = buffer + 4 - (timeout_counter[0] * TIMEOUT + segment.getrsptime())
+#         if buffer < 0:
+#             buffer = 0
+#             logging.info("BUFFER STALLED ( Buffer = {} sec ) !".format(buffer))
+#         else:
+#             logging.info("Buffer = {} sec".format(buffer))
+#
+#     else:  # algorithm makes decision about next segments
+#         logging.info("Segment number {}: ".format(segment_counter))
+#         timeout_counter[0] = 0  # restarting timeout counter before sending next request
+#         segment = try_req_exc(parsed_mpd.media_url(alg.algorithm_1(segment.usersbandwidth()), segment_counter))
+#         logging.info("Response size: {} bytes".format(segment.getsize()))
+#         logging.info("Response time: {} seconds".format(segment.getrsptime()))
+#         logging.info("User's bandwidth: {} bps".format(segment.usersbandwidth()))
+#         buffer = buffer + 4 - (timeout_counter[0] * TIMEOUT + segment.getrsptime())
+#         if buffer < 0:
+#             buffer = 0
+#             logging.info("BUFFER STALLED ( Buffer = {} sec ) !".format(buffer))
+#         else:
+#             logging.info("Buffer = {} sec".format(buffer))
+#
+#     segment_counter += 1
+# # ---------------------------------------------------------------------------------------------------------------
+# logging.info("STREAM FINISHED!")
+
+# Sending requests for segments using algorithm2:
 while segment_counter <= parsed_mpd.segmentsNumber:
     if segment_counter == 1:  # first segment of minimum quality
         logging.info("Segment number {}: ".format(segment_counter))
@@ -70,7 +116,8 @@ while segment_counter <= parsed_mpd.segmentsNumber:
     elif segment_counter == 2:  # second segment of minimum quality
         logging.info("Segment number {}: ".format(segment_counter))
         timeout_counter[0] = 0  # restarting timeout counter before sending next request
-        segment = try_req_exc(parsed_mpd.media_url(parsed_mpd.bandwidths[0], segment_counter))
+        bandwidth = parsed_mpd.bandwidths[0]
+        segment = try_req_exc(parsed_mpd.media_url(bandwidth, segment_counter))
         logging.info("Response size: {} bytes".format(segment.getsize()))
         logging.info("Response time: {} seconds".format(segment.getrsptime()))
         logging.info("User's bandwidth: {} bps".format(segment.usersbandwidth()))
@@ -81,10 +128,11 @@ while segment_counter <= parsed_mpd.segmentsNumber:
         else:
             logging.info("Buffer = {} sec".format(buffer))
 
-    else:  # algorithm makes decision about next segment
+    else:  # algorithm makes decision about next segments
         logging.info("Segment number {}: ".format(segment_counter))
         timeout_counter[0] = 0  # restarting timeout counter before sending next request
-        segment = try_req_exc(parsed_mpd.media_url(alg.algorithm_1(segment.usersbandwidth()), segment_counter))
+        bandwidth = alg.algorithm_2(segment.usersbandwidth(), bandwidth)
+        segment = try_req_exc(parsed_mpd.media_url(bandwidth, segment_counter))
         logging.info("Response size: {} bytes".format(segment.getsize()))
         logging.info("Response time: {} seconds".format(segment.getrsptime()))
         logging.info("User's bandwidth: {} bps".format(segment.usersbandwidth()))
@@ -97,3 +145,4 @@ while segment_counter <= parsed_mpd.segmentsNumber:
 
     segment_counter += 1
 # ---------------------------------------------------------------------------------------------------------------
+logging.info("STREAM FINISHED!")

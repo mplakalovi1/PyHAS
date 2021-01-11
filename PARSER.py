@@ -42,7 +42,7 @@ class Parser:
             self.bandwidths.append(int(representation.get('bandwidth')))
             i += 1
 
-        self.bandwidths.sort() # bandwidths sorted in ascending order
+        self.bandwidths.sort()  # bandwidths sorted in ascending order
         # Logging informations
         logging.info("MPD file informations:"
                      "\nMPD file title: {}"
