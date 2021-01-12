@@ -23,8 +23,8 @@ def try_req_exc(url):
         timeout_counter[0] += 1
         logging.error(str(err3) + " error3")
         if timeout_counter[0] == 3:  # after 3 successive timeouts end streaming ! <----------
-            return
-        try_req_exc(url)
+            sys.exit()
+        return try_req_exc(url)
     except exceptions.RequestException as err4:
         logging.error(str(err4) + " error4")
         sys.exit()
