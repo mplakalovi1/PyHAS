@@ -12,14 +12,12 @@ start = time.time()
 config = ConfigParser()
 config.read('config.ini')
 
-mpd_url: str = config['.mpd file']['mpd']
-algorithm_to_use: str = config['sensitive informations']['algorithm']
-segments_num: int = int(config['sensitive informations']['segments number'])
-timeout: int = int(config['sensitive informations']['timeout'])
-buffer_threshold: int = int(config['sensitive informations']['buffer threshold'])
-buffer_filling: int = int(config['sensitive informations']['buffer filling'])
-
-
+mpd_url: str = config['mpd file']['mpd']
+algorithm_to_use: str = config['sensitive_informations']['algorithm']
+segments_num: int = int(config['sensitive_informations']['segments_number'])
+timeout: int = int(config['sensitive_informations']['timeout'])
+buffer_threshold: int = int(config['sensitive_informations']['buffer_threshold'])
+buffer_filling: int = int(config['sensitive_informations']['buffer_filling'])
 # ---------------------------------------------------------------------
 
 
@@ -46,8 +44,6 @@ def try_req_exc(url):
     except exceptions.RequestException as err4:
         logging.error(str(err4))
         sys.exit()
-
-
 # -----------------------------------------------------------------------------------------
 
 
@@ -116,6 +112,3 @@ logging.info("{} SEGMENTS DOWNLOADED !".format(segments_num))
 logging.info("Stats: "
              "\nUser's bandwidth through streaming [bps]: {}"
              "\nRequested bit rates through streaming [bps]: {}".format(algorithm.usersbandwidth, algorithm.previous))
-
-print(time.time() - start)
-print(len(algorithm.usersbandwidth), len(algorithm.previous))

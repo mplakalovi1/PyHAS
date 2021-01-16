@@ -73,5 +73,3 @@ class Parser:
     def get_media_url(self, segment: int, number: int):
         index = self.__mpdUrl.rfind('/') + 1
         return (self.__mpdUrl[:index] + self.__media[str(segment)]).replace('$Number$', str(number))
-
-
