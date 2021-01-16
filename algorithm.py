@@ -23,7 +23,7 @@ class Algorithm:
             logging.info("BUFFER STALLED {} seconds".format(abs(self.__buffer)))
             self.__buffer = 0
         else:
-            logging.info("Buffer = {} sec".format(self.__buffer))
+            logging.info("Buffer = {} seconds".format(self.__buffer))
 
     @property
     def previous(self):
@@ -43,16 +43,16 @@ class Algorithm:
 
 
 class Algorithm1(Algorithm):  # multiple hops if it's possible
-    def alg1(self):
-        for bitrate in range(len(self.bitrates), -1, -1):  # finding best possible bit rate considering user's bandwidth
-            if bitrate <= self.usersbandwidth[-1]:
-                self.previous = bitrate
+    def alg(self):
+        for i in range(len(self.bitrates)):  # finding best possible bit rate considering user's bandwidth
+            if self.bitrates[-i - 1] <= self.usersbandwidth[-1]:
+                self.previous = self.bitrates[-i - 1]
                 return
         self.previous = self.bitrates[0]  # if user's bw is under all bit rates choose the smallest quality
 
 
 class Algorithm2(Algorithm):  # for smoother transitions (one hop up or down)
-    def alg2(self):
+    def alg(self):
         index = self.bitrates.index(self.previous[-1])  # index of previous segment's bit rate
 
         if self.usersbandwidth[-1] < self.previous[-1]:

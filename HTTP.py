@@ -29,3 +29,6 @@ class Http:
     @property
     def successful(self):  # check if response code is 200 (check if response is successful)
         return self.__response.status_code == 200
+
+    def raise_for_status(self):
+        self.__response.raise_for_status()

@@ -62,6 +62,10 @@ class Parser:
     def bitrates(self):
         return self.__bitrates
 
+    @property
+    def segment_duration(self):
+        return self.__maxSegmentDuration
+
     def get_initialization_url(self):
         index = self.__mpdUrl.rfind('/') + 1
         return self.__mpdUrl[:index] + self.__initialization
