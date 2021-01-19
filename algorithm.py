@@ -1,3 +1,18 @@
+"""
+algorithm module for implementing different algorithms for HTTP Adaptive Streaming.
+Module imports logging module and has one base class called Algorithm.
+Base class has four private instance attributes __bitrates, __buffer, __previous, __usersbandwidth which stores
+relevant informations for algorithm. Base class also implements getters and setters for it's private attributes.
+Classes Algorithm1 and Algorithm2 are inherited from base class Algorithm! Both classes have one method called alg which
+implements specific algorithm for HTTP Adaptive Streaming.
+
+Algorithm1 - makes decision about next bit rate considering just user's bandwidth during previous segment's download.
+This algorithm makes multiple hops if it's possible and finds best bit rate considering user's bw.
+
+Algorithm2 - makes decision about next bit rate considering user's bandwidth during previous segment's download and
+previous bit rate which was chosen. It is used for smoother transitions during streaming.
+"""
+
 import logging
 
 

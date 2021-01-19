@@ -1,3 +1,15 @@
+"""
+player module is the 'brain' of pyHAS.
+
+It reads configuration from config.ini file, implements try_req_exc function which uses HTTP module for sending desired
+requests and which takes action if an error occurred. This module also rules over other modules and uses them when
+needed, whether it's parsing MPD file, sending request via try_req_exc function or calling desired algorithm.
+
+For logging information it imports logging module, for parsing .ini file imports ConfigParser from configparser, and for
+catching an error it imports exceptions from requests module!
+
+"""
+
 import HTTP
 import xmlparser
 import algorithm
@@ -7,12 +19,11 @@ import sys
 from configparser import ConfigParser
 import time
 
-start = time.time()
 # reading configuration: ----------------------------------------------
 config = ConfigParser()
 config.read('config.ini')
 
-mpd_url: str = config['mpd file']['mpd']
+mpd_url: str = config['mpd_file']['mpd']
 algorithm_to_use: str = config['sensitive_informations']['algorithm']
 segments_num: int = int(config['sensitive_informations']['segments_number'])
 timeout: int = int(config['sensitive_informations']['timeout'])

@@ -1,3 +1,14 @@
+"""
+HTTP module for requesting .MPD file and segments.
+This module imports requests and logging module, and implements Http class.
+
+Http class has one private instance attribute __response which is response object,
+also implements five methods (getters) for accessing relevant informations as response size,
+response time, user's bandwidth, content in unicode, response status code and one more method called raise_for_status.
+
+Raise_for_status raises HTTPError, if one occurred, and successful checks if response code is 200.
+"""
+
 import requests
 import logging
 logging.basicConfig(filename='pyHAS.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')

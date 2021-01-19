@@ -1,3 +1,13 @@
+"""
+xmlparser module for parsing XML files from string.
+Module imports xml.etree.ElementTree and logging module.
+MPD files are in XML format and needs to be parsed for accessing informations of interest.
+
+This module implements class Parser which has twelve private instance attributes which stores parsed informations about
+stream. It also implements five getters for segments number, available bitrates, segment duration, and for getting media
+url and initialization url.
+"""
+
 import xml.etree.ElementTree as ET
 import logging
 
