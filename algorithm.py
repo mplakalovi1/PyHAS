@@ -3,14 +3,14 @@ algorithm module for implementing different algorithms for HTTP Adaptive Streami
 Module imports logging module and has one base class called Algorithm.
 Base class has four private instance attributes __bitrates, __buffer, __previous, __usersbandwidth which stores
 relevant informations for algorithm. Base class also implements getters and setters for it's private attributes.
-Classes Algorithm1 and Algorithm2 are inherited from base class Algorithm! Both classes have one method called alg which
-implements specific algorithm for HTTP Adaptive Streaming.
+Classes Lsrb and Osrb are inherited from base class Algorithm! Both classes have one method called update_selection
+which implements specific algorithm for HTTP Adaptive Streaming.
 
-Algorithm1 - makes decision about next bit rate considering just user's bandwidth during previous segment's download.
-This algorithm makes multiple hops if it's possible and finds best bit rate considering user's bw.
+Lsrb - makes decision about next bit rate considering just user's bandwidth during previous segment's download.
+This algorithm makes multiple hops if it's possible and finds best bit rate considering user's bandwidth.
 
-Algorithm2 - makes decision about next bit rate considering user's bandwidth during previous segment's download and
-previous bit rate which was chosen. It is used for smoother transitions during streaming.
+Osrb - makes decision about next bit rate considering user's bandwidth during previous segment's download and
+previous bit rate which was chosen. It's used for smoother transitions during streaming.
 """
 
 import logging
@@ -57,8 +57,8 @@ class Algorithm:
         self.__usersbandwidth.append(value)
 
 
-class Algorithm1(Algorithm):  # multiple hops if it's possible
-    def alg(self):
+class Lsrb(Algorithm):  # multiple hops if it's possible  -> Lsrb-Last segment rate based <-
+    def update_selection(self):
         for i in range(len(self.bitrates)):  # finding best possible bit rate considering user's bandwidth
             if self.bitrates[-i - 1] <= self.usersbandwidth[-1]:
                 self.previous = self.bitrates[-i - 1]
@@ -66,8 +66,8 @@ class Algorithm1(Algorithm):  # multiple hops if it's possible
         self.previous = self.bitrates[0]  # if user's bw is under all bit rates choose the smallest quality
 
 
-class Algorithm2(Algorithm):  # for smoother transitions (one hop up or down)
-    def alg(self):
+class Osrb(Algorithm):  # for smoother transitions (one hop up or down) -> Osrb-One step rate based <-
+    def update_selection(self):
         index = self.bitrates.index(self.previous[-1])  # index of previous segment's bit rate
 
         if self.usersbandwidth[-1] < self.previous[-1]:

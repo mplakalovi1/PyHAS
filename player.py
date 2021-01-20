@@ -70,10 +70,10 @@ if segments_num > mpd_file.segments_number:  # <------ if assigned number of seg
     segments_num = mpd_file.segments_number
 
 # Deciding which algorithm to be used:
-if algorithm_to_use == 'Algorithm1':
-    algorithm = algorithm.Algorithm1(mpd_file.bitrates)
-elif algorithm_to_use == 'Algorithm2':
-    algorithm = algorithm.Algorithm2(mpd_file.bitrates)
+if algorithm_to_use == 'Lsrb':
+    algorithm = algorithm.Lsrb(mpd_file.bitrates)
+elif algorithm_to_use == 'Osrb':
+    algorithm = algorithm.Osrb(mpd_file.bitrates)
 else:
     logging.info("Algorithm given by the configuration is not defined")
     sys.exit()
@@ -106,7 +106,7 @@ while segments_counter <= segments_num:
             logging.info("STREAMING STARTED !")
 
         logging.info("Segment number {}: ".format(segments_counter))
-        algorithm.alg()  # <------ ALGORITHM called!
+        algorithm.update_selection()  # <------ ALGORITHM called!
         segment = try_req_exc(mpd_file.get_media_url(algorithm.previous[-1], segments_counter))
         # Logging: --------------------------------------------------------------
         logging.info("Response size: {} bytes".format(segment.size))
